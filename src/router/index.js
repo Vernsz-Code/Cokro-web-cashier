@@ -8,6 +8,7 @@ import dashboard from '../pages/master/dashboard.vue';
 import transaksi from '../pages/transaksi.vue';
 import unPage from '../pages/undefinedPage.vue';
 import login from '../pages/login.vue';
+import testPrint from '../pages/testPrint.vue'
 
 const routes = [
   {
@@ -30,6 +31,12 @@ const routes = [
     path: '/produk',
     name: 'produk',
     component: produk,
+    meta: { requiresAuth: true },
+  },
+  {
+    path: '/testprint',
+    name: 'testprint',
+    component: testPrint,
     meta: { requiresAuth: true },
   },
   {
