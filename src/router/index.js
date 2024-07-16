@@ -4,6 +4,7 @@ import store from '../store';
 
 import produk from '../pages/produk.vue';
 import searchProduk from '../pages/searchProduk.vue';
+import searchProdukT from '../pages/searchProdukT.vue';
 import dashboard from '../pages/master/dashboard.vue';
 import transaksi from '../pages/transaksi.vue';
 import unPage from '../pages/undefinedPage.vue';
@@ -20,6 +21,11 @@ const routes = [
     path: '/:pathMatch(.*)*',
     name: 'undefined page',
     component: unPage,
+  },
+  {
+    path: '/searchProdukT',
+    name: 'searchProdukT',
+    component: searchProdukT,
   },
   {
     path: '/',

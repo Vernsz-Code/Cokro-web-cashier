@@ -164,7 +164,7 @@
           <div class="w-[calc(100%-200px)] flex justify-center">
             <!-- Search bar -->
             <form
-              @submit.prevent="searchItem"
+              @submit.prevent="searchProduct"
               class="flex items-center w-[500px]"
               v-show="showSearchBar"
             >
@@ -190,11 +190,18 @@
                 <input
                   type="text"
                   v-model="searchValue"
+                  @input="searchProduct"
                   id="voice-search"
                   class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full pl-10 p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                   placeholder="Search..."
                 />
               </div>
+              <router-link 
+                to="/produk">
+                <button @click="clearSearchValue" class=" font-bold ml-3 text-xl">
+                  X
+                </button>
+              </router-link>
             </form>
           </div>
           <!-- User login -->
@@ -275,8 +282,8 @@ export default {
       showSide: true,
       showSearchBar: true,
       jabatanUser: "",
-      searchValue: "",
       isSelected: "",
+      searchValue: "",
     };
   },
   mounted() {
@@ -285,6 +292,12 @@ export default {
     this.checkRoute();
   },
   methods: {
+    clearSearchValue(){
+      this.searchValue = ''
+    },
+    searchProduct() {
+      this.$router.push(`/produk/${this.searchValue} `);
+    },
     // hide show side bar
     toggleSideBar() {
       this.showSide = !this.showSide;
@@ -292,9 +305,6 @@ export default {
     // toggle user
     toggleDrop() {
       this.showDropDown = !this.showDropDown;
-    },
-    searchItem() {
-      this.$router.push(`/produk/${this.searchValue}`);
     },
     checkRoute() {
       if (this.$route.name === "transaksi") {

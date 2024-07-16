@@ -1,14 +1,23 @@
 // src/main.js
 import { createApp } from 'vue';
 import App from './App.vue';
-import IminPrinter from 'imin-printer'; 
 import router from './router';
 import store from './store';
 // import css
-import './assets/css/app.css'
+import './assets/css/app.css';
 
-  const app =createApp(App)
-  app.config.globalProperties.$printer = new IminPrinter('10.0.21.53');
-  app.use(store)
-  app.use(router)
-  app.mount('#app')
+// Import plugin
+import IminPrinter from 'imin-printer';
+
+// Create Vue application
+const app = createApp(App);
+
+// Use the store and router
+app.use(store);
+app.use(router);
+
+// Use the IminPrinter plugin
+app.use(IminPrinter);
+
+// Mount the Vue application
+app.mount('#app');

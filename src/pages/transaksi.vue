@@ -1,5 +1,99 @@
 <template>
-  <div class="h-[29em]">
+<div
+      id="printable"
+      class=" absolute z-0 w-[350px] text-black text-xs bg-white grid grid-flow-row py-3 px-2 gap-1"
+    >
+      <div class="w-full grid grid-flow-row font-bold">
+        <span class="w-full text-center">Cokro4Mart</span>
+        <span class="w-full text-center">JL.Hos Cokroaminoto No.102</span>
+        <span class="w-full text-center">Enggal, B.Lampung</span>
+      </div>
+      <div class="w-full grid grid-flow-row">
+        <div class="w-full grid grid-flow-col">
+          <span class="w-20 text-start">No Faktur</span>
+          <span class="w-[150px] text-start">: {{ noFaktur }}</span>
+        </div>
+        <div class="w-full grid grid-flow-col">
+          <span class="w-20 text-start">Tanggal</span>
+          <span class="w-[150px] text-start">: {{ currentDate }}</span>
+        </div>
+      </div>
+      <div class="w-full mt-3">
+        <table class="w-full text-left border-collapse">
+          <thead class="border-b-2 border-gray-300">
+            <tr class="grid grid-cols-9">
+              <th scope="col" class="p-1 col-span-3 border border-gray-300">
+                <div class="flex items-center font-normal">Nama Barang</div>
+              </th>
+              <th scope="col" class="p-1 col-span-2 border border-gray-300">
+                <div class="flex items-center font-normal">Harga</div>
+              </th>
+              <th scope="col" class="p-1 col-span-2 border border-gray-300">
+                <div class="flex items-center font-normal">Qty</div>
+              </th>
+              <th scope="col" class="p-1 col-span-2 border border-gray-300">
+                <div class="flex items-center font-normal">Subtotal</div>
+              </th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr
+              v-for="(item, index) in products"
+              :key="index"
+              class="grid grid-cols-9"
+            >
+              <td
+                class="px-1 pt-2 pb-10 items-start justify-start col-span-3 border border-gray-300"
+              >
+                {{ item.nama }}
+              </td>
+              <td
+                class="px-1 pt-2 pb-10 items-start justify-start col-span-2 border border-gray-300"
+              >
+                {{ formatMoney(item.price) }}
+              </td>
+              <td
+                class="px-1 pt-2 pb-10 items-start justify-start col-span-2 border border-gray-300"
+              >
+                {{ item.qty }}
+              </td>
+              <td
+                class="px-1 pt-2 pb-10 items-start justify-start col-span-2 border border-gray-300"
+              >
+                {{ formatMoney(item.qty * item.price) }}
+              </td>
+            </tr>
+            <tr class="grid grid-cols-9">
+              <td scope="col" class="p-1 col-span-3"></td>
+              <td scope="col" class="p-1 col-span-2"></td>
+              <td scope="col" class="p-1 col-span-2 border border-gray-300">
+                <div class="flex items-center">{{ totalProduk }}</div>
+              </td>
+              <td scope="col" class="p-1 col-span-2 border border-gray-300">
+                <div class="flex items-center">
+                  {{ formatMoney(totalHarga) }}
+                </div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="w-full grid grid-flow-row mt-3 font-normal">
+        <div class="w-full flex justify-between">
+          <span class="w-20 text-start">Total</span>
+          <span class="w-[150px] text-end">{{ formatMoney(totalHarga) }}</span>
+        </div>
+        <div class="w-full flex justify-between border-b-2">
+          <span class="w-20 text-start">Tunai</span>
+          <span class="w-[150px] text-end">{{ formatMoney(totalBayar) }}</span>
+        </div>
+        <div class="w-full flex justify-between">
+          <span class="w-20 text-start">Kembalian</span>
+          <span class="w-[150px] text-end">{{ formatMoney(kembalian) }}</span>
+        </div>
+      </div>
+    </div>
+  <div class="h-[29em] relative z-30 bg-gray-50">
     <h3 class="text-2xl font-bold text-left py-2">Transaksi</h3>
     <div
       class="overflow-x-auto h-full relative flex flex-col sm:rounded-lg font-bold text-sm gap-2"
@@ -58,6 +152,7 @@
             type="number"
             v-model.number="bayar"
             placeholder="Bayar"
+            @change="kembalianFunction"
             class="rounded-xl border-gray-700 border-2 p-1"
           />
           <input
@@ -123,22 +218,20 @@
         </table>
       </div>
       <div class="w-full h-[em] flex items-end justify-start pt-3">
-        <button
-          class="bg-gray-700 px-3 py-2 rounded-md text-white"
-          @click="fetchProduct"
-        >
-          Cari Barang
-        </button>
+        <router-link to="/searchProdukT">
+          <button class="bg-gray-700 px-3 py-2 rounded-md text-white">
+            Cari Produk
+          </button>
+        </router-link>
       </div>
     </div>
-
     <!-- Success Modal -->
     <div
       v-if="showSuccessModal"
       class="fixed inset-0 bg-gray-800 bg-opacity-50 flex items-center justify-center"
     >
       <div class="bg-white p-6 rounded shadow-lg text-center">
-        <p class="text-lg font-bold">Data berhasil disimpan!</p>
+        <p class="text-lg font-bold">{{ successMessage }}</p>
         <button
           class="mt-4 bg-blue-500 text-white px-4 py-2 rounded"
           @click="closeSuccessModal"
@@ -147,10 +240,28 @@
         </button>
       </div>
     </div>
+
+    <!-- Error Modal -->
+    <div
+      v-if="showErrorModal"
+      class="fixed inset-0 bg-gray-800 bg-opacity-50 flex items-center justify-center"
+    >
+      <div class="bg-white p-6 rounded shadow-lg text-center">
+        <p class="text-lg font-bold">{{ errorMessage }}</p>
+        <button
+          class="mt-4 bg-red-500 text-white px-4 py-2 rounded"
+          @click="closeErrorModal"
+        >
+          OK
+        </button>
+      </div>
+    </div>
   </div>
 </template>
+
 <script>
 import axios from "axios";
+import { getCurrentDateFormatted } from "../utils/date.js";
 
 export default {
   data() {
@@ -158,6 +269,7 @@ export default {
       products: [],
       noFaktur: "",
       kodeBarang: "",
+      currentDate: getCurrentDateFormatted(),
       bayar: 0,
       kredit: false,
       totalProduk: 0,
@@ -166,6 +278,9 @@ export default {
       totalBayar: 0,
       kembalian: 0,
       showSuccessModal: false, // For displaying success modal
+      showErrorModal: false, // For displaying error modal
+      errorMessage: "", // Error message to display in the modal
+      successMessage: "", // Error message to display in the modal
     };
   },
   async created() {
@@ -224,6 +339,20 @@ export default {
         currency: "IDR",
       });
     },
+    formatMoney(value) {
+      if (value === undefined || value === null) return "0";
+      if (typeof value !== "number") return "0";
+      return value.toLocaleString("id-ID", {
+        style: "decimal",
+        minimumFractionDigits: 0,
+        maximumFractionDigits: 2,
+      });
+    },
+
+    kembalianFunction() {
+      this.calculateTotals();
+      this.SuccessModal(`kembalian : ${this.formatRupiah(this.kembalian)}`);
+    },
 
     removeProduct(index) {
       this.products.splice(index, 1);
@@ -234,7 +363,7 @@ export default {
     saveProducts() {
       const transactionData = this.products.map((product) => ({
         no_faktur: this.noFaktur,
-        kode: product.kode || "505",    
+        kode: product.kode || "505",
         nama: product.nama || "nameless",
         qty: product.qty || 0,
         harga: product.price || 0,
@@ -272,12 +401,17 @@ export default {
         harga: product.price,
         subtotal: (product.qty * product.price).toFixed(2),
         mark_up: product.mark_up,
-        laba: product.laba,
+        laba: product.qty * product.mark_up,
         payment: this.kredit ? "kredit" : "tunai",
         Tunai: this.bayar - this.totalHarga,
         status: this.kredit ? "-" : "lunas",
         retur: 0,
       }));
+
+      if (transactions.length == 0) {
+        this.showError("Tidak ada data yang disimpan");
+        return;
+      }
 
       try {
         localStorage.setItem("transactionData", JSON.stringify(transactions)); // Save data to localStorage
@@ -291,8 +425,30 @@ export default {
           }
         );
         console.log("Response from server:", response.data);
-
+        try {
+          const responses = axios.put(
+            `${import.meta.env.VITE_API_URL}/update-data/product`,
+            transactions,
+            {
+              headers: {
+                "api-key": import.meta.env.VITE_API_KEY_HEADER,
+              },
+            }
+          );
+          console.log("Responses from server:", responses.data);
+        } catch (error) {
+          console.error("Error sending data to server:", error);
+          this.showError("Error updating product data.");
+          return;
+        }
+        console.log("Response from server:", response.data);
         // Reset data and show success modal
+        this.SuccessModal("Data berhasil ditambahkan!");
+        printJS({
+          printable: "printable",
+          type: "html",
+          css: ["/src/assets/css/app.css"],
+        });
         this.products = [];
         this.noFaktur = "";
         this.bayar = 0;
@@ -302,11 +458,11 @@ export default {
         this.totalDiskon = 0;
         this.totalBayar = 0;
         this.kembalian = 0;
-
+        this.fetchNoFaktur();
         localStorage.removeItem("transactionData");
-        this.showSuccessModal = true; // Show success modal
       } catch (error) {
         console.error("Error sending data to server:", error);
+        this.showError("Error saving transaction data.");
       }
     },
 
@@ -335,9 +491,17 @@ export default {
             mark_up: product.mark_up,
             laba: product.laba,
             qty: 1,
+            stok_akhir: product.stok_akhir,
           }));
 
+          console.log(response.data.data[0].stok_akhir);
+
           fetchedProducts.forEach((fetchedProduct) => {
+            // if (fetchedProduct.stok_akhir <= 0) {
+            //   this.showError("Produk habis");
+            //   return;
+            // }
+
             const existingProduct = this.products.find(
               (item) => item.kode === fetchedProduct.kode
             );
@@ -357,7 +521,21 @@ export default {
         }
       } catch (error) {
         console.error("Error fetching product data:", error);
+        this.showError("Error fetching product data.");
       }
+    },
+
+    showError(message) {
+      this.errorMessage = message;
+      this.showErrorModal = true;
+    },
+    SuccessModal(message) {
+      this.successMessage = message;
+      this.showSuccessModal = true;
+    },
+
+    closeErrorModal() {
+      this.showErrorModal = false;
     },
 
     closeSuccessModal() {

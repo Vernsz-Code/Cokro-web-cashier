@@ -60,16 +60,16 @@ export default {
     return { route };
   },
   created() {
-    this.fetchData();
+    this.fetchData(this.route.params.search);
   },
   watch: {
     '$route.params.search': 'fetchData',
   },
   methods: {
-    async fetchData() {
+    async fetchData(value) {
       try {
         const response = await axios.get(
-          `${import.meta.env.VITE_API_URL}/get-data/products/${this.route.params.search}`,
+          `${import.meta.env.VITE_API_URL}/get-data/products/${value}`,
           {
             headers: {
               "api-key": import.meta.env.VITE_API_KEY_HEADER,
@@ -77,7 +77,6 @@ export default {
           }
         );
         this.produk = response.data.data;
-        console.log(response.data);
         this.tableshow = true;
       } catch (error) {
         this.tableshow = false;
