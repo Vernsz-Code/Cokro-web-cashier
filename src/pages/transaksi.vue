@@ -1,99 +1,99 @@
 <template>
-<div
-      id="printable"
-      class=" absolute z-0 w-[350px] text-black text-xs bg-white grid grid-flow-row py-3 px-2 gap-1"
-    >
-      <div class="w-full grid grid-flow-row font-bold">
-        <span class="w-full text-center">Cokro4Mart</span>
-        <span class="w-full text-center">JL.Hos Cokroaminoto No.102</span>
-        <span class="w-full text-center">Enggal, B.Lampung</span>
+  <div
+    id="printable"
+    class="absolute z-[-2] w-[350px] text-black text-xs bg-white grid grid-flow-row py-3 px-2 gap-1"
+  >
+    <div class="w-full grid grid-flow-row font-bold">
+      <span class="w-full text-center">Cokro4Mart</span>
+      <span class="w-full text-center">JL.Hos Cokroaminoto No.102</span>
+      <span class="w-full text-center">Enggal, B.Lampung</span>
+    </div>
+    <div class="w-full grid grid-flow-row">
+      <div class="w-full grid grid-flow-col">
+        <span class="w-20 text-start">No Faktur</span>
+        <span class="w-[150px] text-start">: {{ noFaktur }}</span>
       </div>
-      <div class="w-full grid grid-flow-row">
-        <div class="w-full grid grid-flow-col">
-          <span class="w-20 text-start">No Faktur</span>
-          <span class="w-[150px] text-start">: {{ noFaktur }}</span>
-        </div>
-        <div class="w-full grid grid-flow-col">
-          <span class="w-20 text-start">Tanggal</span>
-          <span class="w-[150px] text-start">: {{ currentDate }}</span>
-        </div>
-      </div>
-      <div class="w-full mt-3">
-        <table class="w-full text-left border-collapse">
-          <thead class="border-b-2 border-gray-300">
-            <tr class="grid grid-cols-9">
-              <th scope="col" class="p-1 col-span-3 border border-gray-300">
-                <div class="flex items-center font-normal">Nama Barang</div>
-              </th>
-              <th scope="col" class="p-1 col-span-2 border border-gray-300">
-                <div class="flex items-center font-normal">Harga</div>
-              </th>
-              <th scope="col" class="p-1 col-span-2 border border-gray-300">
-                <div class="flex items-center font-normal">Qty</div>
-              </th>
-              <th scope="col" class="p-1 col-span-2 border border-gray-300">
-                <div class="flex items-center font-normal">Subtotal</div>
-              </th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr
-              v-for="(item, index) in products"
-              :key="index"
-              class="grid grid-cols-9"
-            >
-              <td
-                class="px-1 pt-2 pb-10 items-start justify-start col-span-3 border border-gray-300"
-              >
-                {{ item.nama }}
-              </td>
-              <td
-                class="px-1 pt-2 pb-10 items-start justify-start col-span-2 border border-gray-300"
-              >
-                {{ formatMoney(item.price) }}
-              </td>
-              <td
-                class="px-1 pt-2 pb-10 items-start justify-start col-span-2 border border-gray-300"
-              >
-                {{ item.qty }}
-              </td>
-              <td
-                class="px-1 pt-2 pb-10 items-start justify-start col-span-2 border border-gray-300"
-              >
-                {{ formatMoney(item.qty * item.price) }}
-              </td>
-            </tr>
-            <tr class="grid grid-cols-9">
-              <td scope="col" class="p-1 col-span-3"></td>
-              <td scope="col" class="p-1 col-span-2"></td>
-              <td scope="col" class="p-1 col-span-2 border border-gray-300">
-                <div class="flex items-center">{{ totalProduk }}</div>
-              </td>
-              <td scope="col" class="p-1 col-span-2 border border-gray-300">
-                <div class="flex items-center">
-                  {{ formatMoney(totalHarga) }}
-                </div>
-              </td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
-      <div class="w-full grid grid-flow-row mt-3 font-normal">
-        <div class="w-full flex justify-between">
-          <span class="w-20 text-start">Total</span>
-          <span class="w-[150px] text-end">{{ formatMoney(totalHarga) }}</span>
-        </div>
-        <div class="w-full flex justify-between border-b-2">
-          <span class="w-20 text-start">Tunai</span>
-          <span class="w-[150px] text-end">{{ formatMoney(totalBayar) }}</span>
-        </div>
-        <div class="w-full flex justify-between">
-          <span class="w-20 text-start">Kembalian</span>
-          <span class="w-[150px] text-end">{{ formatMoney(kembalian) }}</span>
-        </div>
+      <div class="w-full grid grid-flow-col">
+        <span class="w-20 text-start">Tanggal</span>
+        <span class="w-[150px] text-start">: {{ currentDate }}</span>
       </div>
     </div>
-  <div class="h-[29em] relative z-30 bg-gray-50">
+    <div class="w-full mt-3">
+      <table class="w-full text-left border-collapse">
+        <thead class="border-b-2 border-gray-300">
+          <tr class="grid grid-cols-9">
+            <th scope="col" class="p-1 col-span-3 border border-gray-300">
+              <div class="flex items-center font-normal">Nama Barang</div>
+            </th>
+            <th scope="col" class="p-1 col-span-2 border border-gray-300">
+              <div class="flex items-center font-normal">Harga</div>
+            </th>
+            <th scope="col" class="p-1 col-span-2 border border-gray-300">
+              <div class="flex items-center font-normal">Qty</div>
+            </th>
+            <th scope="col" class="p-1 col-span-2 border border-gray-300">
+              <div class="flex items-center font-normal">Subtotal</div>
+            </th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr
+            v-for="(item, index) in products"
+            :key="index"
+            class="grid grid-cols-9"
+          >
+            <td
+              class="px-1 pt-2 pb-10 items-start justify-start col-span-3 border border-gray-300"
+            >
+              {{ item.nama }}
+            </td>
+            <td
+              class="px-1 pt-2 pb-10 items-start justify-start col-span-2 border border-gray-300"
+            >
+              {{ formatMoney(item.price) }}
+            </td>
+            <td
+              class="px-1 pt-2 pb-10 items-start justify-start col-span-2 border border-gray-300"
+            >
+              {{ item.qty }}
+            </td>
+            <td
+              class="px-1 pt-2 pb-10 items-start justify-start col-span-2 border border-gray-300"
+            >
+              {{ formatMoney(item.qty * item.price) }}
+            </td>
+          </tr>
+          <tr class="grid grid-cols-9">
+            <td scope="col" class="p-1 col-span-3"></td>
+            <td scope="col" class="p-1 col-span-2"></td>
+            <td scope="col" class="p-1 col-span-2 border border-gray-300">
+              <div class="flex items-center">{{ totalProduk }}</div>
+            </td>
+            <td scope="col" class="p-1 col-span-2 border border-gray-300">
+              <div class="flex items-center">
+                {{ formatMoney(totalHarga) }}
+              </div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="w-full grid grid-flow-row mt-3 font-normal">
+      <div class="w-full flex justify-between">
+        <span class="w-20 text-start">Total</span>
+        <span class="w-[150px] text-end">{{ formatMoney(totalHarga) }}</span>
+      </div>
+      <div class="w-full flex justify-between border-b-2">
+        <span class="w-20 text-start">Tunai</span>
+        <span class="w-[150px] text-end">{{ formatMoney(totalBayar) }}</span>
+      </div>
+      <div class="w-full flex justify-between">
+        <span class="w-20 text-start">Kembalian</span>
+        <span class="w-[150px] text-end">{{ formatMoney(kembalian) }}</span>
+      </div>
+    </div>
+  </div>
+  <div class="h-[29em] relative z-20 bg-gray-50">
     <h3 class="text-2xl font-bold text-left py-2">Transaksi</h3>
     <div
       class="overflow-x-auto h-full relative flex flex-col sm:rounded-lg font-bold text-sm gap-2"
@@ -137,6 +137,7 @@
           <input
             type="text"
             v-model="kodeBarang"
+            @input="fetchProduct"
             placeholder="kode barang"
             class="rounded-xl border-gray-700 border-2 p-1"
           />
@@ -468,60 +469,61 @@ export default {
 
     async fetchProduct() {
       try {
-        const response = await axios.get(
-          `${import.meta.env.VITE_API_URL}/get-data/products/${
-            this.kodeBarang
-          }`,
-          {
-            headers: {
-              "api-key": import.meta.env.VITE_API_KEY_HEADER,
-            },
-          }
-        );
-
-        if (
-          response.data &&
-          response.data.data &&
-          Array.isArray(response.data.data)
-        ) {
-          const fetchedProducts = response.data.data.map((product) => ({
-            nama: product.nama_brg,
-            price: product.jual,
-            kode: product.kode_brg,
-            mark_up: product.mark_up,
-            laba: product.laba,
-            qty: 1,
-            stok_akhir: product.stok_akhir,
-          }));
-
-          console.log(response.data.data[0].stok_akhir);
-
-          fetchedProducts.forEach((fetchedProduct) => {
-            // if (fetchedProduct.stok_akhir <= 0) {
-            //   this.showError("Produk habis");
-            //   return;
-            // }
-
-            const existingProduct = this.products.find(
-              (item) => item.kode === fetchedProduct.kode
-            );
-
-            if (existingProduct) {
-              existingProduct.qty += fetchedProduct.qty;
-            } else {
-              this.products.push(fetchedProduct);
+        if (this.kodeBarang.length >= 6) {
+          const response = await axios.get(
+            `${import.meta.env.VITE_API_URL}/get-data/products-t/${
+              this.kodeBarang
+            }`,
+            {
+              headers: {
+                "api-key": import.meta.env.VITE_API_KEY_HEADER,
+              },
             }
-          });
+          );
 
-          this.saveProducts();
-          this.calculateTotals();
-          this.kodeBarang = "";
-        } else {
-          console.error("No products found with code:", this.kodeBarang);
+          if (
+            response.data &&
+            response.data.data &&
+            Array.isArray(response.data.data)
+          ) {
+            const fetchedProducts = response.data.data.map((product) => ({
+              nama: product.nama_brg,
+              price: product.jual,
+              kode: product.kode_brg,
+              mark_up: product.mark_up,
+              laba: product.laba,
+              qty: 1,
+              stok_akhir: product.stok_akhir,
+            }));
+
+            console.log(response.data.data[0].stok_akhir);
+
+            fetchedProducts.forEach((fetchedProduct) => {
+              // if (fetchedProduct.stok_akhir <= 0) {
+              //   this.showError("Produk habis");
+              //   return;
+              // }
+
+              const existingProduct = this.products.find(
+                (item) => item.kode === fetchedProduct.kode
+              );
+
+              if (existingProduct) {
+                existingProduct.qty += fetchedProduct.qty;
+              } else {
+                this.products.push(fetchedProduct);
+              }
+            });
+
+            this.saveProducts();
+            this.calculateTotals();
+            this.kodeBarang = "";
+          } else {
+            console.error("No products found with code:", this.kodeBarang);
+          }
         }
       } catch (error) {
         console.error("Error fetching product data:", error);
-        this.showError("Error fetching product data.");
       }
     },
 
